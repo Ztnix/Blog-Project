@@ -1,0 +1,220 @@
+/* #region pagesetup */
+
+h1,
+h2,
+ul,
+p,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  border: 1px rgb(206, 206, 206) solid;
+}
+
+.headerContainer .title {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.headerContainer .title:hover {
+  cursor: pointer;
+}
+
+.sidebarContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  max-width: 250px;
+  border: 1px rgb(206, 206, 206) solid;
+}
+
+.sidebarTabsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  list-style: none;
+  margin-top: 3rem;
+  align-items: center;
+  padding: 0;
+}
+
+.sidebarTabsContainer li {
+  font-size: 1.3rem;
+  color: rgb(127, 127, 127);
+  width: fit-content;
+  border-bottom: 1px rgb(206, 206, 206) solid;
+  letter-spacing: 3px;
+}
+
+.mainRowContainer {
+  display: flex;
+  flex: 1 1 0;
+}
+
+.mainAreaContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  align-items: center;
+  padding: 5rem;
+  background-color: #ededed;
+}
+/* #endregion */
+
+/* #region index */
+
+.contentContainer {
+  border: 1px rgb(206, 206, 206) solid;
+  width: 640px;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentHeader {
+  background-color: #f3f3f3;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.contentBtn {
+  background: #2b7fff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 0.5rem 0.8rem;
+}
+
+.contentBtnDlt {
+  background: #ff5252;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 0.5rem 0.8rem;
+}
+
+.contentBtn:hover,
+.contentBtnDlt:hover {
+  cursor: pointer;
+}
+
+.contentExtra {
+  display: flex;
+  width: 100%;
+  flex: 1 1 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contentBody {
+  padding: 1rem 0rem;
+  background-color: white;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnContainer {
+  display: flex;
+  gap: 1rem;
+  text-align: center;
+  align-items: center;
+}
+
+.contentBody table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+th[scope="col"] {
+  background-color: #707070;
+  color: white;
+  text-align: center;
+}
+
+th,
+td {
+  padding: 1rem 3rem;
+}
+
+td {
+  text-align: center;
+}
+
+tr {
+  border-bottom: 1px solid rgb(190, 190, 190);
+}
+
+tr:nth-of-type(even) {
+  background-color: #fafafa;
+}
+.contentList {
+  width: 100%;
+}
+
+.contentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.5rem 0.5rem 1.5rem 2rem;
+  flex: 1 1 0;
+  border-bottom: 1px solid rgb(190, 190, 190);
+}
+
+.CRUDcontainer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.contentBody > div:last-child {
+  margin-top: 1rem;
+}
+
+/* #endregion */
+
+/* #region form*/
+
+form {
+  margin: 0;
+}
+
+.errorsContainer {
+  background-color: rgb(255, 52, 52);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px rgb(206, 206, 206) solid;
+}
+/* #endregion */
