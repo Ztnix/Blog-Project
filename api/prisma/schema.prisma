@@ -13,6 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id    String @id @default(uuid())
+  name  String @unique
+  users User[] @relation("UserRoles")
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  posts Post[]
+}
+
 model User {
   id        String    @id @default(uuid())
   username  String    @unique
@@ -20,6 +32,7 @@ model User {
   createdAt DateTime  @default(now())
   posts     Post[]
   commments Comment[]
+  roles     Role[]    @relation("UserRoles")
 }
 
 model Post {
@@ -31,6 +44,7 @@ model Post {
   userId       String?
   created_at   DateTime  @default(now())
   comments     Comment[]
+  tags         Tag[]
 }
 
 model Comment {

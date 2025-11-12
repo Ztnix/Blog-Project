@@ -4,12 +4,13 @@ const blogRouter = Router();
 const passport = require("passport");
 const path = require("path");
 const { check, validationResult } = require("express-validator");
+const { ensureMasterAdmin, ensureAuth } = require("../middlewares/auth.js");
 
 blogRouter.post(
   "/signUp",
   [
     check("password")
-      .isLength({ min: 5 })
+      .isLength({ min: 4 })
       .withMessage("Password must be at least 3 characters long"),
     check("password")
       .matches(/\d/)
@@ -35,11 +36,7 @@ blogRouter.post(
   prismaController.signUp
 );
 
-blogRouter.get("/setUser", (req, res) => {
-  if (req.isAuthenticated && req.isAuthenticated())
-    return res.json({ user: req.user });
-  return res.status(401).json({ user: null });
-});
+blogRouter.get("/setUser", prismaController.setUser);
 
 blogRouter.post("/login", passport.authenticate("local"), function (req, res) {
   res.json({ user: req.user });
@@ -58,5 +55,21 @@ blogRouter.get("/blog/:title", prismaController.getSpecificBlog);
 blogRouter.post("/newComment", prismaController.newComment);
 
 blogRouter.get("/getComments/:title", prismaController.getComments);
+
+// ADMIN STUFF
+
+blogRouter.post(
+  "/admin/changeUserRole",
+  ensureAuth,
+  ensureMasterAdmin,
+  prismaController.changeUserRole
+);
+
+blogRouter.get(
+  "/admin/getAllUsers",
+  ensureAuth,
+  ensureMasterAdmin,
+  prismaController.getAllUsers
+);
 
 module.exports = blogRouter;

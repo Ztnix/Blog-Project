@@ -8,7 +8,12 @@ const path = require("node:path");
 const blogRouter = require("./routes/blogRouter");
 const pool = require("./db/pool");
 const cors = require("cors");
-const allowed = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const allowed = [
+  "http://localhost:3001",
+  "http://127.0.0.1:3001",
+  "http://localhost:3002",
+  "http://127.0.0.1:3002",
+];
 
 const app = express();
 

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
-export default function SignUp() {
+export default function Login() {
+  const { setUser } = useAuth();
   const [form, setForm] = useState({
     username: "",
     password: "",
-    passwordConfirm: "",
   });
   const [msg, setMsg] = useState(null);
   const navigate = useNavigate();
@@ -20,19 +21,20 @@ export default function SignUp() {
     setMsg(null);
 
     try {
-      const res = await fetch("http://localhost:3000/signUp", {
+      const res = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(form),
       });
 
-      const body = await res.json();
+      const body = await res.json().catch(() => null);
 
       if (!res.ok) {
-        setMsg(body.errors || "Signup failed");
+        setMsg(body.errors || body.error || "Login failed");
         return;
       }
-
+      setUser(body.user);
       navigate(body.redirect || "/home");
     } catch (err) {
       console.log(err);
@@ -46,7 +48,7 @@ export default function SignUp() {
       className="w-full space-y-4 bg-[#3b3b3b] text-white p-8 rounded-xl"
     >
       <div className="flex flex-col gap-2">
-        <label className="block">Username</label>
+        <label className="block">Email</label>
         <input
           name="username"
           value={form.username}
@@ -66,22 +68,11 @@ export default function SignUp() {
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="block">Confirm Password</label>
-        <input
-          name="passwordConfirm"
-          type="password"
-          value={form.passwordConfirm}
-          onChange={onChange}
-          className="border px-2 py-1 w-full text-[#797979]"
-        />
-      </div>
-
       <button
         type="submit"
         className="bg-linear-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 transition-colors duration-200 text-white px-4 py-2 rounded w-full mt-2"
       >
-        Sign up
+        Login
       </button>
 
       {msg && (
@@ -93,12 +84,12 @@ export default function SignUp() {
       )}
 
       <p className="text-[#afafaf] text-center">
-        ¿Already have an account?{" "}
+        ¿Don't have an account?{" "}
         <Link
-          to="/login"
+          to="/signup"
           className="text-blue-500 hover:text-blue-300 transition-colors duration-200 font-bold"
         >
-          Log In!
+          ¡Create one!
         </Link>
       </p>
     </form>

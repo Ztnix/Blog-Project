@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
-export default function SignUp() {
+export default function NewBlogForm() {
   const [form, setForm] = useState({
-    username: "",
-    password: "",
-    passwordConfirm: "",
+    title: "",
+    content: "",
   });
   const [msg, setMsg] = useState(null);
   const navigate = useNavigate();
@@ -20,16 +18,17 @@ export default function SignUp() {
     setMsg(null);
 
     try {
-      const res = await fetch("http://localhost:3000/signUp", {
+      const res = await fetch("http://localhost:3000/newBlog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(form),
       });
 
       const body = await res.json();
 
       if (!res.ok) {
-        setMsg(body.errors || "Signup failed");
+        setMsg(body.errors || "Blog Creation failed");
         return;
       }
 
@@ -43,37 +42,27 @@ export default function SignUp() {
   return (
     <form
       onSubmit={onSubmit}
-      className="w-full space-y-4 bg-[#3b3b3b] text-white p-8 rounded-xl"
+      className="w-[35%] space-y-4 h-fit bg-[#3b3b3b] text-white p-8 rounded-xl"
     >
       <div className="flex flex-col gap-2">
-        <label className="block">Username</label>
+        <label className="block">Blog's Title:</label>
         <input
-          name="username"
-          value={form.username}
+          maxLength={60}
+          name="title"
+          value={form.title}
           onChange={onChange}
           className="border px-2 py-1 w-full text-[#797979]"
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="block">Password</label>
-        <input
-          name="password"
-          type="password"
-          value={form.password}
+        <label className="block">Blog's Content:</label>
+        <textarea
+          name="content"
+          value={form.content}
           onChange={onChange}
-          className="border px-2 py-1 w-full text-[#797979]"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label className="block">Confirm Password</label>
-        <input
-          name="passwordConfirm"
-          type="password"
-          value={form.passwordConfirm}
-          onChange={onChange}
-          className="border px-2 py-1 w-full text-[#797979]"
+          className="border px-2 py-1 w-full text-[#797979] rounded"
+          rows={12}
         />
       </div>
 
@@ -81,7 +70,7 @@ export default function SignUp() {
         type="submit"
         className="bg-linear-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 transition-colors duration-200 text-white px-4 py-2 rounded w-full mt-2"
       >
-        Sign up
+        Create Blog
       </button>
 
       {msg && (
@@ -91,16 +80,6 @@ export default function SignUp() {
           ))}
         </div>
       )}
-
-      <p className="text-[#afafaf] text-center">
-        ¿Already have an account?{" "}
-        <Link
-          to="/login"
-          className="text-blue-500 hover:text-blue-300 transition-colors duration-200 font-bold"
-        >
-          Log In!
-        </Link>
-      </p>
     </form>
   );
 }

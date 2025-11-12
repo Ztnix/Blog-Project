@@ -8,10 +8,16 @@ const prismaRouter = require("../routes/blogRouter");
 async function signUp(req, res, next) {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const memberRole = await prisma.role.findUnique({
+      where: { name: "Member" },
+    });
     const user = await prisma.user.create({
       data: {
         username: req.body.username,
         password: hashedPassword,
+        roles: {
+          connect: { id: memberRole.id },
+        },
       },
       select: { id: true, username: true },
     });
@@ -20,6 +26,32 @@ async function signUp(req, res, next) {
     console.error(error);
     next(error);
   }
+}
+
+async function setUser(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: {
+          id: true,
+          username: true,
+          roles: { select: { name: true } },
+        },
+      });
+
+      const roleNames = (user.roles || []).map((r) => r.name);
+
+      return res.json({
+        user: { id: user.id, username: user.username, roles: roleNames },
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Server error" });
+    }
+  }
+
+  return res.status(401).json({ user: null });
 }
 
 async function logOut(req, res, next) {
@@ -79,7 +111,7 @@ async function getSpecificBlog(req, res, next) {
     res.json({ post });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch posts" });
+    res.status(500).json({ error: "Failed to fetch users" });
   }
 }
 
@@ -127,6 +159,48 @@ async function getComments(req, res, next) {
   }
 }
 
+async function changeUserRole(req, res, next) {
+  const roleToChange = req.body.roleToChange;
+  const userId = req.body.id;
+  try {
+    const role = await prisma.role.findUnique({
+      where: { name: roleToChange },
+    });
+    if (!role) return res.status(500).json({ error: "Role not found" });
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { roles: true },
+    });
+
+    const hasRole = user.roles.some((r) => r.id === role.id);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        roles: hasRole
+          ? { disconnect: { id: role.id } }
+          : { connect: { id: role.id } },
+      },
+    });
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
+
+async function getAllUsers(req, res, next) {
+  try {
+    const users = await prisma.user.findMany({ include: { roles: true } });
+    res.json({ users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch Users" });
+  }
+}
+
 async function uploadFileForm(req, res) {
   const folderId = req.params.folderId;
   res.render("uploadFileForm", {
@@ -162,11 +236,14 @@ async function uploadFile(req, res) {
 module.exports = {
   logOut,
   signUp,
+  setUser,
   newBlog,
   getBlogs,
   getSpecificBlog,
   getComments,
   newComment,
+  changeUserRole,
+  getAllUsers,
   uploadFileForm,
   uploadFile,
 };
